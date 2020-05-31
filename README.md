@@ -10,11 +10,11 @@ however this can be disabled if you don't want those things.
 
 You can see it in use on [minorshadows.net](https://minorshadows.net/).
 
-Named after Fujifilm Neopan 1600 Professional (RIP). Inspired (but not based
+Named after Fujifilm Neopan 1600 Professional (RIP). Inspired by (but not based
 on) [Expose](https://github.com/Jack000/Expose).
 
-How to install and use
-----------------------
+Install and use
+---------------
 1. Download 1600pr.sh. Make it executable (`chmod +x 1600pr.sh`).
 
 2. Make sure ImageMagick is installed, *or* set `responsive` and `archive_page`
@@ -22,7 +22,10 @@ to `false` in `1600pr.sh`.
 
 3. Add image: `./1600pr.sh ~/some-image.jpg`
 
-Boom, you now have a photoblog built in `public/`. rsync or scp it somewhere.
+Boom, you now have a photoblog built in `public/`. rsync or scp it somewhere:
+
+    rsync -av -e ssh public/* user@example.com:public_html
+
 You probably want to change a few variables (title, absolute url, menu) in
 the script, though, or set environment variables (`_1600PR_SITE_TITLE`,
 `_1600PR_SITE_URL`, `_1600PR_EMAIL`).
@@ -55,7 +58,7 @@ How it works
 Information about each post is stored in `_1600pr.dat`. It's a plaintext file
 where each line represents one post, in ascending order from oldest to newest.
 (To change the order, just move lines around and rebuild.)
-Each line has a tab-separated values: image ID, date, filename, optional title.
+Each line has tab-separated values: image ID, date, filename, optional title.
 
 The original image is copied to the non-public folder `images/`. For each photo,
 a number of sizes are generated (unless you've opted not to) and put in
@@ -106,8 +109,8 @@ we get the following:
 
 ```
 
-Customizing
------------
+Customize
+---------
 A few things (such as what sizes to generate) can be set with variables at
 the top of the script. Otherwise just hack it to your heart's content. This
 is a quick hack for my own personal use: it's deliberately minimalist and I'm
