@@ -15,14 +15,16 @@ site_title=${_1600PR_SITE_TITLE:-"J. Random Photoblogger"}
 site_url=${_1600PR_SITE_URL:-"https://example.com/"} # Absolute URL to photoblog; used for RSS
 email=${_1600PR_EMAIL:-"foobar@example.com"}
 
-db_file="./_1600pr.dat"
-image_dir="./images"
-output_dir="./public"
-web_root_path="/" # Relative URL to site, e.g. / or /photoblog/; this affects links
-menu="<a href=\"${web_root_path}\">home</a> <a href=\"${web_root_path}photo\">archive</a> <a href=\"mailto:${email}\">contact</a>"
-archive_page=true # Whether to create an archive page and generate thumbs. If false, also change menu.
-responsive=true # Create different sizes of each image (see sizes) for responsive images
+db_file="./_1600pr.dat"    # Filename to use for the "database"
+image_dir="./images"       # Directory where original images should be stored
+output_dir="./public"      # Where to build the site
+web_root_path="/"          # Relative URL to site, e.g. / or /photoblog/; this affects links
+archive_page=true          # Whether to create an archive page and generate thumbs.
+                           # If false, you should also change menu below.
+responsive=true            # Create different sizes of each image (see sizes) for responsive images
 sizes="1920 1600 1280 800" # Image sizes to create (widths)
+
+menu="<a href=\"${web_root_path}\">home</a> <a href=\"${web_root_path}photo\">archive</a> <a href=\"mailto:${email}\">contact</a>"
 
 ###########################################################################
 
@@ -52,8 +54,8 @@ while getopts "hbd:t:r:" opt; do
     h) usage; exit;;
     b) rebuild=true ;;
     d) post_date="${OPTARG}" ;;
-    t) POST_TITLE="${OPTARG}" ;;
-    r) ID_TO_REMOVE="${OPTARG}" ;;
+    t) post_title="${OPTARG}" ;;
+    r) id_to_remove="${OPTARG}" ;;
     *) usage; exit;; 
   esac
 done
@@ -107,7 +109,9 @@ gen_images () {
   else
     cp "${image_dir}/${1}" "${output_dir}/images/${2}"
   fi
-  gen_thumb "${1}" "${2}"
+  if [ "${archive_page}" = true ]; then
+    gen_thumb "${1}" "${2}"
+  fi
 }
 
 # $1: path, $2: RFC 822 datetime, $3: optional title
@@ -355,14 +359,20 @@ if ! [ -f "${output_dir}/style.css" ]; then
   gen_css
 fi
 
+# Make sure ImageMagick's convert/mogrify are available if image generation is needed
+if [ "${archive_page}" = true ] || [ "${responsive}" = true ] ; then
+  command -v convert >/dev/null 2>&1 || { echo >&2 "Error: ImageMagick convert command not found"; exit 1; }
+  command -v mogrify >/dev/null 2>&1 || { echo >&2 "Error: ImageMagick mogrify command not found"; exit 1; }
+fi
+
 if [ "${rebuild}" = true ]; then
   rebuild_all
-elif [ -n "${ID_TO_REMOVE}" ]; then
-  if [ -z "${ID_TO_REMOVE##*[!0-9]*}" ]; then
+elif [ -n "${id_to_remove}" ]; then
+  if [ -z "${id_to_remove##*[!0-9]*}" ]; then
     echo "Specified ID not positive integer."
     exit 1
   else
-    remove_post "${ID_TO_REMOVE}"
+    remove_post "${id_to_remove}"
     rebuild_all
   fi
 else
@@ -372,7 +382,7 @@ else
     exit 1
   fi
 
-  add_image "${1}" "${post_date}" "${POST_TITLE}"
+  add_image "${1}" "${post_date}" "${post_title}"
   new_id=$(get_latest_id)
   generate_post_html "${new_id}"
   # New post also becomes the new index.html
