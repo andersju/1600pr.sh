@@ -286,9 +286,9 @@ gen_rss() {
         } else {
           printf "<title>%s</title>\n", $2
         }
-        printf "<link>%sphoto/%s</link>\n", site_url, $1
+        printf "<link>%sphoto/%s/</link>\n", site_url, $1
         printf "<pubDate>%s</pubDate>\n", $2
-        printf "<guid>%sphoto/%s</guid>\n", site_url, $1
+        printf "<guid>%sphoto/%s/</guid>\n", site_url, $1
         printf "<description><![CDATA[<img src=\"%simages/%s/%s.%s.jpg\" />]]></description>\n", site_url, $1, $3, largest
         printf "</item>\n"
       }'
@@ -333,6 +333,7 @@ rebuild_all () {
   echo "Copying latest post to ${output_dir}/index.html"
   cp "${output_dir}/photo/$(get_latest_id)/index.html" "${output_dir}/index.html"
   gen_css
+  gen_rss
 }
 
 # $1: ID to remove
