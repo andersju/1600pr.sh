@@ -116,3 +116,13 @@ the top of the script. Otherwise just hack it to your heart's content. This
 is a quick hack for my own personal use: it's deliberately minimalist and I'm
 not looking to add features, but perhaps it can be of use to someone else too.
 
+To change title/url/email without modifying the script you can use environment
+variables. Just set them somewhere, perhaps in a wrapper script, like so:
+
+```
+#!/bin/sh
+export _1600PR_SITE_TITLE="example.com"
+export _1600PR_SITE_URL="https://example.com/"
+export _1600PR_EMAIL="foo@example.com"
+exec ./1600pr.sh "$@"
+```
