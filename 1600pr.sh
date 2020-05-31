@@ -213,7 +213,7 @@ gen_archive_html () {
   thumb_html=$(sed '1!G;h;$!d' "${db_file}" \
     | awk -v web_root=${web_root_path} \
       'BEGIN { FS="\t" }; {
-        printf "<a href=\"%sphoto/%s\"><img src=\"%simages/%s/%s.thumb.jpg\" alt=\"%s\"></a>\n",
+        printf "<a href=\"%sphoto/%s/\"><img src=\"%simages/%s/%s.thumb.jpg\" alt=\"%s\"></a>\n",
         web_root, $1, web_root, $1, $3, $2
       }'
     )
