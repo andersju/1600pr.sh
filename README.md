@@ -30,7 +30,7 @@ You probably have Python installed, so fire up a local web server and look aroun
 
 ### Deploy
 
-rsync or scp the files in `public/` somewhere:
+rsync or scp the files in `public/` to somewhere:
 
     rsync -av -e ssh public/* user@example.com:public_html
 

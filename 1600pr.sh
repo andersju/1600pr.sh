@@ -16,7 +16,7 @@ site_url=${_1600PR_SITE_URL:-"https://example.com/"}       # Absolute URL to pho
 email=${_1600PR_EMAIL:-"foobar@example.com"}               # Email used in default menu HTML
 archive_page=${_1600PR_ARCHIVE_PAGE:-true}                 # If true, create archive page + thumbs.
 sizes=${_1600PR_SIZES:-"1920 1600 1280 800"}  # Image sizes to create (widths). Set to "" to disable.
-rss_items=${_1600PR_RSS_ITEMS:-10}             # Max number of items in RSS file 
+rss_items=${_1600PR_RSS_ITEMS:-10}            # Max number of items in RSS file
 web_root_path=${_1600PR_WEB_ROOT_PATH:-"/"}   # Relative URL to site, e.g. / or /photoblog/; this affects links
 db_file=${_1600PR_DB_FILE:-"./_1600pr.dat"}   # Path to the data file
 image_dir=${_1600PR_IMAGE_DIR:-"./images"}    # Directory where original images should be stored
@@ -230,6 +230,7 @@ gen_archive_html () {
     <meta name="referrer" content="no-referrer">
     <title>${site_title}</title>
     <link rel="stylesheet" href="${web_root_path}style.css">
+    <link href="${web_root_path}index.xml" rel="alternate" type="application/rss+xml" title="${site_title}">
   </head>
   <body>
     <div class="list">
