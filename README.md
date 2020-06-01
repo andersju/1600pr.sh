@@ -20,9 +20,17 @@ Install and use
 2. Make sure ImageMagick is installed, *or* set `responsive` and `archive_page`
 to `false` in `1600pr.sh`.
 
-3. Add image: `./1600pr.sh ~/some-image.jpg`
+3. Add photo: `./1600pr.sh ~/some-photo.jpg`
 
-Boom, you now have a photoblog built in `public/`. rsync or scp it somewhere:
+Boom, you now have a photoblog built in `public/`.
+
+You probably have Python installed, so fire up a local web server and look around:
+
+    cd public/ && python3 -m http.server
+
+### Deploy
+
+rsync or scp the files in `public/` somewhere:
 
     rsync -av -e ssh public/* user@example.com:public_html
 
@@ -30,19 +38,21 @@ You probably want to change a few variables (title, absolute url, menu) in
 the script, though, or set environment variables (`_1600PR_SITE_TITLE`,
 `_1600PR_SITE_URL`, `_1600PR_EMAIL`).
 
-Add image with title:
+### More things you can do
+
+Add photo with title:
 
     ./1600pr.sh -t "My cat." ~/my-cat.jpg
 
 Title is only used in the RSS feed, and for the image's `alt` attribute. If no
 title is set, current date will be used instead.
 
-Add image with title and custom date (should be RFC 822 datetime):
+Add photo with title and custom date (should be RFC 822 datetime):
 
     ./1600pr.sh -t "My cat." -d "Sun, 31 May 2020 19:22:17 +0200" ~/my-cat.jpg
 
-If you nuked your `public/`, or changed something in the script (e.g. what
-sizes to generate), you can rebuild everything with -b:
+If you nuked your `public/`, or changed some setting (e.g. what sizes to generate),
+you can rebuild everything with -b:
 
     ./1600pr.sh -b
 
@@ -51,16 +61,16 @@ Remove post with ID 23 from the "database" and rebuild:
     ./1600pr.sh -d 23
 
 (This doesn't *remove* anything from `public/`, nor does it remove the
-original image stored in `images/`.)
+original photo stored in `images/`.)
 
 How it works
 ------------
 Information about each post is stored in `_1600pr.dat`. It's a plaintext file
 where each line represents one post, in ascending order from oldest to newest.
 (To change the order, just move lines around and rebuild.)
-Each line has tab-separated values: image ID, date, filename, optional title.
+Each line has tab-separated values: photo ID, date, filename, optional title.
 
-The original image is copied to the non-public folder `images/`. For each photo,
+The original photo is copied to the non-public folder `images/`. For each photo,
 a number of sizes are generated (unless you've opted not to) and put in
 `public/images/<id>/`.
 
@@ -106,7 +116,6 @@ we get the following:
     │   │   └── index.html
     │   └── index.html
     └── style.css
-
 ```
 
 Customize
@@ -114,7 +123,7 @@ Customize
 A few things (such as what sizes to generate) can be set with variables at
 the top of the script. Otherwise just hack it to your heart's content. This
 is a quick hack for my own personal use: it's deliberately minimalist and I'm
-not looking to add features, but perhaps it can be of use to someone else too.
+not looking to add major features, but perhaps it can be of use to someone else too.
 
 To change title/url/email without modifying the script you can use environment
 variables. Just set them somewhere, perhaps in a wrapper script, like so:
