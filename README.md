@@ -36,7 +36,7 @@ rsync or scp the files in `public/` somewhere:
 
 You probably want to change a few variables (title, absolute url, menu) in
 the script, though, or set environment variables (`_1600PR_SITE_TITLE`,
-`_1600PR_SITE_URL`, `_1600PR_EMAIL`).
+`_1600PR_SITE_URL`, `_1600PR_EMAIL`, etc).
 
 ### More things you can do
 
@@ -88,7 +88,7 @@ we get the following:
 
 ```
 .
-├── _1600pr.db
+├── _1600pr.dat
 ├── 1600pr.sh
 ├── images
 │   ├── foo01.jpg
@@ -96,17 +96,17 @@ we get the following:
 └── public
     ├── images
     │   ├── 1
-    │   │   ├── foo01.jpg.1280.jpg
-    │   │   ├── foo01.jpg.1600.jpg
-    │   │   ├── foo01.jpg.1920.jpg
-    │   │   ├── foo01.jpg.800.jpg
-    │   │   └── foo01.jpg.thumb.jpg
+    │   │   ├── 1280_foo01.jpg
+    │   │   ├── 1600_foo01.jpg
+    │   │   ├── 1920_foo01.jpg
+    │   │   ├── 800_foo01.jpg
+    │   │   └── thumb_foo01.jpg
     │   └── 2
-    │       ├── foo02.jpg.1280.jpg
-    │       ├── foo02.jpg.1600.jpg
-    │       ├── foo02.jpg.1920.jpg
-    │       ├── foo02.jpg.800.jpg
-    │       └── foo02.jpg.thumb.jpg
+    │       ├── 1280_foo02.jpg
+    │       ├── 1600_foo02.jpg
+    │       ├── 1920_foo02.jpg
+    │       ├── 800_foo02.jpg
+    │       └── thumb_foo02.jpg
     ├── index.html
     ├── index.xml
     ├── photo
@@ -120,13 +120,13 @@ we get the following:
 
 Customize
 ---------
-A few things (such as what sizes to generate) can be set with variables at
-the top of the script. Otherwise just hack it to your heart's content. This
-is a quick hack for my own personal use: it's deliberately minimalist and I'm
-not looking to add major features, but perhaps it can be of use to someone else too.
+A bunch of things can be set with variables at the top of the script. Otherwise
+just hack it to your heart's content. This is a quick hack for my own personal
+use: it's deliberately minimalist and I'm not looking to add major features,
+but perhaps it can be of use to someone else too.
 
-To change title/url/email without modifying the script you can use environment
-variables. Just set them somewhere, perhaps in a wrapper script, like so:
+To change title/url/email/sizes/etc. without modifying the script you can use
+environment variables. Just set them somewhere, perhaps in a wrapper script, like so:
 
 ```
 #!/bin/sh

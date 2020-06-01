@@ -11,20 +11,19 @@
 # Anders Jensen-Urstad <anders@unix.se>
 # License: MIT
 
-site_title=${_1600PR_SITE_TITLE:-"J. Random Photoblogger"}
-site_url=${_1600PR_SITE_URL:-"https://example.com/"} # Absolute URL to photoblog; used for RSS
-email=${_1600PR_EMAIL:-"foobar@example.com"}
+site_title=${_1600PR_SITE_TITLE:-"J. Random Photoblogger"} # <title> in HTML and RSS
+site_url=${_1600PR_SITE_URL:-"https://example.com/"}       # Absolute URL to photoblog; used for RSS
+email=${_1600PR_EMAIL:-"foobar@example.com"}               # Email used in default menu HTML
+archive_page=${_1600PR_ARCHIVE_PAGE:-true}                 # If true, create archive page + thumbs.
+sizes=${_1600PR_SIZES:-"1920 1600 1280 800"}  # Image sizes to create (widths). Set to "" to disable.
+rss_items=${_1600PR_RSS_ITEMS:-10}             # Max number of items in RSS file 
+web_root_path=${_1600PR_WEB_ROOT_PATH:-"/"}   # Relative URL to site, e.g. / or /photoblog/; this affects links
+db_file=${_1600PR_DB_FILE:-"./_1600pr.dat"}   # Path to the data file
+image_dir=${_1600PR_IMAGE_DIR:-"./images"}    # Directory where original images should be stored
+output_dir=${_1600PR_OUTPUT_DIR:-"./public"}  # Where to build the site
 
-db_file="./_1600pr.dat"    # Filename to use for the "database"
-image_dir="./images"       # Directory where original images should be stored
-output_dir="./public"      # Where to build the site
-web_root_path="/"          # Relative URL to site, e.g. / or /photoblog/; this affects links
-archive_page=true          # Whether to create an archive page and generate thumbs.
-                           # If false, you should also change menu below.
-responsive=true            # Create different sizes of each image (see sizes) for responsive images
-sizes="1920 1600 1280 800" # Image sizes to create (widths)
-
-menu="<a href=\"${web_root_path}\">home</a> <a href=\"${web_root_path}photo\">archive</a> <a href=\"mailto:${email}\">contact</a>"
+default_menu="<a href=\"${web_root_path}\">home</a> <a href=\"${web_root_path}photo\">archive</a> <a href=\"mailto:${email}\">contact</a>"
+menu=${_1600PR_MENU:-"${default_menu}"} # Menu HTML
 
 ###########################################################################
 
@@ -104,7 +103,7 @@ gen_image_versions () {
 # $1: image filename, $2: post id
 gen_images () {
   mkdir -p "${output_dir}/images/${2}"
-  if [ "${responsive}" = true ]; then
+  if [ -n "${sizes}" ]; then
     gen_image_versions "${1}" "${2}"
   else
     cp "${image_dir}/${1}" "${output_dir}/images/${2}"
@@ -155,7 +154,7 @@ add_image () {
 # $1: filename, $2: post id
 generate_img_src () {
   title=$(get_title "${2}")
-  if [ "${responsive}" = true ]; then
+  if [ -n "${sizes}" ]; then
     for size in $sizes; do
       srcset="${srcset}${web_root_path}images/${2}/${size}_${1} ${size}w, "
     done
@@ -215,7 +214,7 @@ EOF
 gen_archive_html () {
   echo "Creating archive page"
   thumb_html=$(sed '1!G;h;$!d' "${db_file}" \
-    | awk -v web_root=${web_root_path} \
+    | awk -v web_root="${web_root_path}" \
       'BEGIN { FS="\t" }; {
         printf "<a href=\"%sphoto/%s/\"><img src=\"%simages/%s/thumb_%s\" alt=\"%s\"></a>\n",
         web_root, $1, web_root, $1, $3, $2
@@ -281,7 +280,7 @@ EOF
 gen_rss() {
   last_build_date=$(date "+%a, %d %b %Y %H:%M:%S %z")
   rss_items=$(sed '1!G;h;$!d' "${db_file}" \
-    | tail -n10 \
+    | tail -n "${rss_items}" \
     | awk -v site_url="${site_url}" -v largest="${sizes%% *}" \
       'BEGIN { FS="\t" }; {
         printf "<item>\n"
@@ -360,7 +359,7 @@ if ! [ -f "${output_dir}/style.css" ]; then
 fi
 
 # Make sure ImageMagick's convert/mogrify are available if image generation is needed
-if [ "${archive_page}" = true ] || [ "${responsive}" = true ] ; then
+if [ "${archive_page}" = true ] || [ -n "${sizes}" ] ; then
   command -v convert >/dev/null 2>&1 || { echo >&2 "Error: ImageMagick convert command not found"; exit 1; }
   command -v mogrify >/dev/null 2>&1 || { echo >&2 "Error: ImageMagick mogrify command not found"; exit 1; }
 fi
