@@ -82,10 +82,10 @@ get_title () {
 
 # $1: image filename, $2: post id
 gen_thumb () {
-  if [ ! -f "${output_dir}/images/${2}/${1}.thumb.jpg" ]; then
+  if [ ! -f "${output_dir}/images/${2}/thumb_${1}" ]; then
     echo "Generating thumbnail for ${1}"
-    convert -define jpeg:size=100x65 "${image_dir}/${1}" -thumbnail 100x65^ -gravity center -extent 100x65 "${output_dir}/images/${2}/${1}.thumb.jpg"
-    mogrify -unsharp 0.25x0.08+8.3+0.045 "${output_dir}/images/${2}/${1}.thumb.jpg"
+    convert -define jpeg:size=100x65 "${image_dir}/${1}" -thumbnail 100x65^ -gravity center -extent 100x65 "${output_dir}/images/${2}/thumb_${1}"
+    mogrify -unsharp 0.25x0.08+8.3+0.045 "${output_dir}/images/${2}/thumb_${1}"
   fi
 }
 
@@ -93,10 +93,10 @@ gen_thumb () {
 gen_image_versions () {
   # unsharp values from https://www.smashingmagazine.com/2015/06/efficient-image-resizing-with-imagemagick/
   for size in ${sizes}; do
-    if [ ! -f "${output_dir}/images/${2}/${1}.${size}.jpg" ]; then
+    if [ ! -f "${output_dir}/images/${2}/${size}_${1}" ]; then
       echo "Generating ${size}x version of ${1}"
-      convert -resize "${size}x" -quality 85 "${image_dir}/${1}" "${output_dir}/images/${2}/${1}.${size}.jpg"
-      mogrify -unsharp 0.25x0.08+8.3+0.045 "${output_dir}/images/${2}/${1}.${size}.jpg"
+      convert -resize "${size}x" -quality 85 "${image_dir}/${1}" "${output_dir}/images/${2}/${size}_${1}"
+      mogrify -unsharp 0.25x0.08+8.3+0.045 "${output_dir}/images/${2}/${size}_${1}"
     fi
   done
 }
@@ -157,11 +157,11 @@ generate_img_src () {
   title=$(get_title "${2}")
   if [ "${responsive}" = true ]; then
     for size in $sizes; do
-      srcset="${srcset}${web_root_path}images/${2}/${1}.${size}.jpg ${size}w, "
+      srcset="${srcset}${web_root_path}images/${2}/${size}_${1} ${size}w, "
     done
     srcset=${srcset%, } # remove trailing ", "
     largest=${sizes%% *}
-    echo "<img src=\"${web_root_path}images/${2}/${1}.${largest}.jpg\" srcset=\"${srcset}\" sizes=\"100vw\" class=\"image-inner\" alt=\"${title}\">"
+    echo "<img src=\"${web_root_path}images/${2}/${largest}_${1}\" srcset=\"${srcset}\" sizes=\"100vw\" class=\"image-inner\" alt=\"${title}\">"
   else
     echo "<img src=\"${web_root_path}images/${2}/${1}\" class=\"image-inner\" alt=\"${title}\">"
   fi
@@ -217,7 +217,7 @@ gen_archive_html () {
   thumb_html=$(sed '1!G;h;$!d' "${db_file}" \
     | awk -v web_root=${web_root_path} \
       'BEGIN { FS="\t" }; {
-        printf "<a href=\"%sphoto/%s/\"><img src=\"%simages/%s/%s.thumb.jpg\" alt=\"%s\"></a>\n",
+        printf "<a href=\"%sphoto/%s/\"><img src=\"%simages/%s/thumb_%s\" alt=\"%s\"></a>\n",
         web_root, $1, web_root, $1, $3, $2
       }'
     )
@@ -293,7 +293,7 @@ gen_rss() {
         printf "<link>%sphoto/%s/</link>\n", site_url, $1
         printf "<pubDate>%s</pubDate>\n", $2
         printf "<guid>%sphoto/%s/</guid>\n", site_url, $1
-        printf "<description><![CDATA[<img src=\"%simages/%s/%s.%s.jpg\" />]]></description>\n", site_url, $1, $3, largest
+        printf "<description><![CDATA[<img src=\"%simages/%s/%s_%s\" />]]></description>\n", site_url, $1, largest, $3
         printf "</item>\n"
       }'
     )
