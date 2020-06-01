@@ -3,25 +3,24 @@
 1600pr.sh is a minimalist static photoblog generator made up of a single
 POSIX-compliant shell script. It should work on most Unix-like systems. It passes
 [ShellCheck](https://github.com/koalaman/shellcheck) and some effort has been
-made to ensure external tools (grep, sed, awk, etc.) are used in a portable
-way. The only external dependency is [ImageMagick](https://imagemagick.org)
+made to ensure external tools (grep, sed, awk, etc.) are used in a portable way.
+
+The only external dependency is [ImageMagick](https://imagemagick.org)
 for creation of thumbnails and alternative sizes (for responsive images),
 however this can be disabled if you don't want those things.
 
-You can see it in use on [minorshadows.net](https://minorshadows.net/).
+You can see it in action on [minorshadows.net](https://minorshadows.net/).
 
 Named after Fujifilm Neopan 1600 Professional (RIP). Inspired by (but not based
 on) [Expose](https://github.com/Jack000/Expose).
 
-Install and use
----------------
-1. Download 1600pr.sh. Make it executable (`chmod +x 1600pr.sh`).
-
-2. Make sure ImageMagick is installed, *or* set `responsive` and `archive_page`
-to `false` in `1600pr.sh`.
-
-3. Add photo: `./1600pr.sh ~/some-photo.jpg`
-
+Installation and usage
+----------------------
+```
+curl -O https://github.com/andersju/1600pr.sh/raw/master/1600pr.sh # download
+chmod +x 1600pr.sh # make it executable
+./1600pr.sh ~/some-photo.jpg # add first photo
+```
 Boom, you now have a photoblog built in `public/`.
 
 You probably have Python installed, so fire up a local web server and look around:
@@ -62,6 +61,9 @@ Remove post with ID 23 from the "database" and rebuild:
 
 (This doesn't *remove* anything from `public/`, nor does it remove the
 original photo stored in `images/`.)
+
+ImageMagick is required, unless you set `sizes` to `""` and `archive_page` to false,
+disabling creation of alternative sizes and archive page with thumbnails.
 
 How it works
 ------------
