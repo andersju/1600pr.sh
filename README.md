@@ -16,10 +16,13 @@ on) [Expose](https://github.com/Jack000/Expose).
 
 Installation and usage
 ----------------------
-```
-curl -O https://github.com/andersju/1600pr.sh/raw/master/1600pr.sh # download
-chmod +x 1600pr.sh # make it executable
-./1600pr.sh ~/some-photo.jpg # add first photo
+```sh
+# Download script
+curl -O https://github.com/andersju/1600pr.sh/raw/master/1600pr.sh
+# Make it executable
+chmod +x 1600pr.sh
+# Add first photo
+./1600pr.sh ~/some-photo.jpg
 ```
 Boom, you now have a photoblog built in `public/`.
 
