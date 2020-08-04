@@ -60,7 +60,7 @@ you can rebuild everything with -b:
 
 Remove post with ID 23 from the "database" and rebuild:
 
-    ./1600pr.sh -d 23
+    ./1600pr.sh -r 23
 
 (This doesn't *remove* anything from `public/`, nor does it remove the
 original photo stored in `images/`.)
