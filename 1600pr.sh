@@ -281,7 +281,7 @@ EOF
 gen_rss() {
   last_build_date=$(date "+%a, %d %b %Y %H:%M:%S %z")
   rss_items=$(sed '1!G;h;$!d' "${db_file}" \
-    | tail -n "${rss_items}" \
+    | head -n "${rss_items}" \
     | awk -v site_url="${site_url}" -v largest="${sizes%% *}" \
       'BEGIN { FS="\t" }; {
         printf "<item>\n"
