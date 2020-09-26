@@ -152,7 +152,7 @@ add_image () {
 }
 
 # $1: filename, $2: post id
-generate_img_src () {
+gen_img_src () {
   title=$(get_title "${2}")
   if [ -n "${sizes}" ]; then
     for size in $sizes; do
@@ -167,7 +167,7 @@ generate_img_src () {
 }
 
 # $1: post id
-generate_post_html () {
+gen_post_html () {
   unset prev_html next_html
 
   post_id=${1}
@@ -201,7 +201,7 @@ generate_post_html () {
   <body>
 
   ${image_before}
-    <div class="image-outer">$(generate_img_src "${filename}" "${post_id}")</div>
+    <div class="image-outer">$(gen_img_src "${filename}" "${post_id}")</div>
   ${image_after}
   ${prev_html}
   ${menu}
@@ -251,7 +251,9 @@ gen_css () {
 
 body {
   background: black;
-  color: white;
+  color: #868e96;
+  font-family: sans-serif;
+  font-size: 0.8em;
   text-align: center;
 }
 
@@ -261,8 +263,6 @@ body {
 
 a {
   color: #868e96;
-  font-family: sans-serif;
-  font-size: 0.8em;
 }
 
 .image-outer {
@@ -327,7 +327,7 @@ rebuild_all () {
       filename=$(echo "${line}" | awk 'BEGIN {FS="\t"}; {print $3}')
       echo "Processing ${filename} (ID ${post_id})"
       gen_images "${filename}" "${post_id}"
-      generate_post_html "${post_id}"
+      gen_post_html "${post_id}"
     fi
   done < "${db_file}"
 
@@ -384,7 +384,7 @@ else
 
   add_image "${1}" "${post_date}" "${post_title}"
   new_id=$(get_latest_id)
-  generate_post_html "${new_id}"
+  gen_post_html "${new_id}"
   # New post also becomes the new index.html
   cp "${output_dir}/photo/${new_id}/index.html" "${output_dir}/index.html"
 
@@ -392,7 +392,7 @@ else
   num_posts=$(get_num_posts)
   if [ "${num_posts}" -gt "1" ]; then
     prev_id=$(tail -n2 "${db_file}" | head -n1 | awk '{print $1}')
-    generate_post_html "${prev_id}"
+    gen_post_html "${prev_id}"
   fi
 
   if [ "${archive_page}" = true ]; then
